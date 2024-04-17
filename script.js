@@ -5,6 +5,12 @@ function AgregarTodo() {
     const todoText = todoInput.value.trim();
     
     if (todoText !== "") {
+        todos.forEach((todo, index) => {
+            if(todoText == todo.text){
+                mostrarError('Tarea ya existente')
+                exit; 
+            }
+        })
         const todo = {
             text: todoText,
             completed: false,
@@ -14,6 +20,16 @@ function AgregarTodo() {
         todoInput.value = "";
         mostrarTodos();
     }
+}
+
+function mostrarError(mensaje) {
+    var mensajeErrorElemento = document.createElement('div');
+    mensajeErrorElemento.id = 'error-message';
+    mensajeErrorElemento.textContent = mensaje;
+    document.body.insertBefore(mensajeErrorElemento, document.body.firstChild);
+    setTimeout(function() {
+        mensajeErrorElemento.remove();
+    }, 2000);
 }
 
 function MostrarCompletos(index) {

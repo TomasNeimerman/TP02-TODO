@@ -63,3 +63,12 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
+
+
+#error-message {
+    background-color: #f44336; /* Rojo */
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+  }
