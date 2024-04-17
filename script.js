@@ -5,7 +5,7 @@ function AgregarTodo() {
     const todoText = todoInput.value.trim();
     
     if (todoText !== "") {
-        todos.forEach((todo, index) => {
+        todos.forEach((todo) => {
             if(todoText == todo.text){
                 mostrarError('Tarea ya existente')
                 exit; 
@@ -14,7 +14,8 @@ function AgregarTodo() {
         const todo = {
             text: todoText,
             completed: false,
-            timestamp: new Date()
+            timestamp: new Date(),
+            timeend: null,
         };
         todos.push(todo);
         todoInput.value = "";
@@ -45,20 +46,20 @@ function Borrar(index) {
 function mostrarTodos() {
     const todoList = document.getElementById("todoList");
     todoList.innerHTML = "";
-    
     todos.forEach((todo, index) => {
         const listItem = document.createElement("li");
         listItem.textContent = todo.text;
         if (todo.completed) {
             listItem.classList.add("Completo");
-            listItem.innerHTML += ` (Hecho a las ${todo.timestamp.toLocaleString()})`;
+            fechaActual = new Date()
+            todo.timeend = fechaActual
+            listItem.innerHTML += `(Hecho a las ${fechaActual.getHours()}hs ${fechaActual.getMinutes()}mins ${fechaActual.getSeconds()}segs del ${fechaActual.getDate()}/${fechaActual.getMonth()})`;
         } else {
             const completeButton = document.createElement("button");
             completeButton.textContent = "Completar";
             completeButton.onclick = () => MostrarCompletos(index);
             listItem.appendChild(completeButton);
         }
-        
         const deleteButton = document.createElement("button");
         deleteButton.textContent = "Borrar";
         deleteButton.onclick = () => Borrar(index);
@@ -69,8 +70,13 @@ function mostrarTodos() {
 }
 
 function TareaMasRapida() {
-    const fastestTask = todos.reduce((prev, curr) => {
-        return prev.timestamp < curr.timestamp ? prev : curr;
-    });
-    alert(`TODO mas rapido: ${fastestTask.text} (Hecho a las ${fastestTask.timestamp.toLocaleString()})`);
+    var masRapido = todos[0].timeend;
+    var nMasRapido = todos[0].text;
+    todos.forEach((todo) => {
+        if(todo.timeend - todo.timestamp < masRapido){
+            masRapido = todo.timeend
+            nMasRapido = todo.text
+        }
+    })
+    alert(`TODO mas rapido: ${nMasRapido} (Hecho a las ${masRapido.getHours()}hs ${masRapido.getMinutes()}mins ${masRapido.getSeconds()}segs del ${masRapido.getDate()}/${masRapido.getMonth()})`);
 }
