@@ -3,14 +3,16 @@ let todos = [];
 function AgregarTodo() {
     const todoInput = document.getElementById("todoInput");
     const todoText = todoInput.value.trim();
-    
+
     if (todoText !== "") {
-        todos.forEach((todo) => {
-            if(todoText == todo.text){
-                mostrarError('Tarea ya existente')
-                exit; 
-            }
-        })
+        
+        const existeTarea = todos.some(todo => todo.text === todoText);
+        
+        if (existeTarea) {
+            mostrarError('Tarea ya existente');
+            return; 
+        }
+
         const todo = {
             text: todoText,
             completed: false,
@@ -70,13 +72,25 @@ function mostrarTodos() {
 }
 
 function TareaMasRapida() {
-    var masRapido = todos[0].timeend;
-    var nMasRapido = todos[0].text;
-    todos.forEach((todo) => {
-        if(todo.timeend - todo.timestamp < masRapido){
-            masRapido = todo.timeend
-            nMasRapido = todo.text
+    let tareaMasRapida = null;
+    let tiempoMasRapido = Infinity; 
+
+    todos.forEach(todo => {
+        if (todo.completed && todo.timeend) {
+            const tiempoTranscurrido = todo.timeend - todo.timestamp;
+
+            if (tiempoTranscurrido < tiempoMasRapido) {
+                tiempoMasRapido = tiempoTranscurrido;
+                tareaMasRapida = todo;
+            }
         }
-    })
-    alert(`TODO mas rapido: ${nMasRapido} (Hecho a las ${masRapido.getHours()}hs ${masRapido.getMinutes()}mins ${masRapido.getSeconds()}segs del ${masRapido.getDate()}/${masRapido.getMonth()})`);
+    });
+
+    if (tareaMasRapida) {
+        const { text, timeend } = tareaMasRapida;
+        const fecha = new Date(timeend);
+        alert(`Tarea más rápida: ${text} (Hecho a las ${fecha.getHours()}hs ${fecha.getMinutes()}mins ${fecha.getSeconds()}segs del ${fecha.getDate()}/${fecha.getMonth() + 1})`);
+    } else {
+        alert('No hay tareas completadas para mostrar la más rápida.');
+    }
 }
